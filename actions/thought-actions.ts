@@ -4,6 +4,15 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+// ✅ FIX: Define and Export FormState
+export type FormState = {
+  success: boolean;
+  message?: string;
+  errors?: {
+    content?: string[];
+  };
+};
+
 const thoughtSchema = z.object({
   content: z
     .string()
@@ -18,7 +27,11 @@ const thoughtSchema = z.object({
     ),
 });
 
-export async function createThought(prevState: any, formData: FormData) {
+export async function createThought(
+  prevState: any,
+  formData: FormData
+): Promise<FormState> {
+  // ✅ Optional: Added return type for safety
   const content = formData.get("content") as string;
   const validatedFields = thoughtSchema.safeParse({ content });
 
